@@ -36,7 +36,7 @@ class UserServiceTest extends KernelTestCase
 
         $this->assertIsArray($result);
         foreach ($result as $user) {
-            self::assertInstanceOf(UserEntity::class, $user);
+            $this->assertInstanceOf(UserEntity::class, $user);
         }
     }
 
@@ -115,7 +115,7 @@ class UserServiceTest extends KernelTestCase
     public function testDeleteUser(): void
     {
         $result = $this->service->delete($this->fixtureUserId);
-        $this->assertTrue($result);
+        $this->assertEmpty($result);
     }
 
     public function testDeleteUnExistingUser(): void

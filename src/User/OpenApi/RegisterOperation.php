@@ -3,7 +3,6 @@
 namespace App\User\OpenApi;
 
 use App\User\DTO\RegisterUserDTO;
-use App\User\UserEntity;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 
@@ -24,7 +23,11 @@ class RegisterOperation extends OA\Post
                 new OA\Response(
                     response: 201,
                     description: 'User created',
-                    content: new OA\JsonContent(ref: new Model(type: UserEntity::class))
+                    content: new OA\JsonContent(properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
+                        new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string'), example: ['ROLE_USER']),
+                    ])
                 ),
                 new OA\Response(response: 409, description: 'Phone number already registered'),
                 new OA\Response(response: 422, description: 'Validation failed'),

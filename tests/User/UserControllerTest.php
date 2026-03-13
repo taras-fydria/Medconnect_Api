@@ -63,8 +63,6 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json');
         $this->assertArrayHasKey('id', $responseData);
         $this->assertArrayHasKey('phone', $responseData);
-        $this->assertArrayHasKey('password', $responseData);
-        $this->assertIsString($responseData['password']);
     }
 
     public function testRegistrationWithExistingPhone(): void

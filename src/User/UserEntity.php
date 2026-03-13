@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PHONE', fields: ['phone'])]
-class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
+class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface, \JsonSerializable
 {
     #[OA\Property(type: 'integer', readOnly: true, example: 1)]
     #[ORM\Id]
@@ -102,6 +102,15 @@ class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
      */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id'    => $this->id,
+            'phone' => $this->phone,
+            'roles' => $this->getRoles(),
+        ];
+    }
+
     public function __serialize(): array
     {
         $data = (array) $this;

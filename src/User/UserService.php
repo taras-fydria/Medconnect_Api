@@ -4,7 +4,6 @@ namespace App\User;
 
 use App\Shared\Exception\ValidationException;
 use App\User\DTO\RegisterUserDTO;
-use App\User\DTO\UpdateUserDTO;
 use App\User\Exception\UserAlreadyExistException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -48,7 +47,7 @@ class UserService
 
     public function getAll(): array
     {
-        return $this->userRepository->findBy([]);
+        return $this->userRepository->findBy([], limit: 100, offset: 0);
     }
 
     public function getOne(int $id): UserEntity
@@ -84,10 +83,9 @@ class UserService
         return $user;
     }
 
-    public function delete(int $id): boo
+    public function delete(int $id): void
     {
         $this->userRepository->deleteOne($this->getOne($id));
-        return true;
     }
 
 }

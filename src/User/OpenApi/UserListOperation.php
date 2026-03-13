@@ -2,8 +2,6 @@
 
 namespace App\User\OpenApi;
 
-use App\User\UserEntity;
-use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
@@ -20,7 +18,13 @@ class UserListOperation extends OA\Get
                     description: 'Array of users',
                     content: new OA\JsonContent(
                         type: 'array',
-                        items: new OA\Items(ref: new Model(type: UserEntity::class))
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'phone', type: 'string', example: '+79991234567'),
+                                new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string'), example: ['ROLE_USER']),
+                            ]
+                        )
                     )
                 ),
             ]
