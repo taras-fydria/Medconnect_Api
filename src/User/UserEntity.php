@@ -3,6 +3,7 @@
 namespace App\User;
 
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -11,17 +12,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PHONE', fields: ['phone'])]
 class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[OA\Property(type: 'integer', readOnly: true, example: 1)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[OA\Property(type: 'string', example: '+79991234567')]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $phone = null;
 
     /**
      * @var list<string> The user roles
      */
+    #[OA\Property(type: 'array', items: new OA\Items(type: 'string'), example: ['ROLE_USER'])]
     #[ORM\Column]
     private array $roles = [];
 

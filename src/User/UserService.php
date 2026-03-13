@@ -84,7 +84,7 @@ class UserService
         return $user;
     }
 
-    public function delete(int $id): bool
+    public function delete(int $id): boo
     {
         $this->userRepository->deleteOne($this->getOne($id));
         return true;

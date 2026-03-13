@@ -3,14 +3,19 @@
 namespace App\User;
 
 use App\User\DTO\RegisterUserDTO;
-use App\User\Exception\UserWrongCredentialsException;
+use App\User\OpenApi\DeleteUserOperation;
+use App\User\OpenApi\LoginOperation;
+use App\User\OpenApi\RegisterOperation;
+use App\User\OpenApi\UpdateUserOperation;
+use App\User\OpenApi\UserListOperation;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
+#[OA\Tag(name: 'User')]
 #[Route('/api/user')]
 final class UserController extends AbstractController
 {
@@ -20,14 +25,15 @@ final class UserController extends AbstractController
     {
     }
 
-
+    #[LoginOperation]
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(): never
     {
         throw new \LogicException('Handled by the firewall — this method should never be reached.');
     }
 
-    #[Route("", name: 'api_user', methods: ['GET']), ]
+    #[UserListOperation]
+    #[Route("", name: 'api_user', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $data = $this->service->getAll();
@@ -35,6 +41,7 @@ final class UserController extends AbstractController
         return new JsonResponse($data);
     }
 
+    #[RegisterOperation]
     #[Route(
         path: '/register',
         name: 'api_register',
@@ -59,9 +66,13 @@ final class UserController extends AbstractController
         return $this->json($result, status: Response::HTTP_CREATED);
     }
 
+    #[UpdateUserOperation]
     #[Route(
         path: '/{id}',
         name: 'api_user_update',
+        requirements: [
+            '_format' => 'json'
+        ],
         methods: ['PUT'],
     )]
     public function update(int $id, Request $request): JsonResponse
@@ -76,8 +87,15 @@ final class UserController extends AbstractController
         return $this->json($user, status: Response::HTTP_CREATED);
     }
 
-
-    #[Route(path: '/{id}')]
+    #[DeleteUserOperation]
+    #[Route(
+        path: '/{id}',
+        name: 'api_user_delete',
+        requirements: [
+            '_format' => 'json'
+        ],
+        methods: ['DELETE'],
+    )]
     public function delete(int $id): JsonResponse
     {
         $this->service->delete($id);
