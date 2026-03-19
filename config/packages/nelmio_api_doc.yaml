@@ -14,4 +14,4 @@ nelmio_api_doc:
             - BearerAuth: []   # applied globally; public endpoints override with security: []
     areas:
         path_patterns:
-            - ^/api(?!/doc)    # include all /api/* but exclude /api/doc itself
+            - ^/api(?!/swagger)    # include all /api/* but exclude /api/swagger itself
