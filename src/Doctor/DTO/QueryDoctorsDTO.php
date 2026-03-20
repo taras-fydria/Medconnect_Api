@@ -2,11 +2,12 @@
 
 namespace App\Doctor\DTO;
 
+use App\Shared\DTO\PaginationDTO;
+
 class QueryDoctorsDTO
 {
     public function __construct(
-        public int $limit = 100,
-        public int $offset = 0,
+        public PaginationDTO $pagination = new PaginationDTO(),
     )
     {
     }

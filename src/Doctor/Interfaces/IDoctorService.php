@@ -3,19 +3,20 @@
 namespace App\Doctor\Interfaces;
 
 use App\Doctor\DTO\CreateDoctorDTO;
+use App\Doctor\DTO\OutputDoctorDTO;
 use App\Doctor\DTO\QueryDoctorsDTO;
 use App\Doctor\DTO\UpdateDoctorDTO;
-use App\User\UserEntity;
+use App\Shared\DTO\PaginatedResultDTO;
 
 interface IDoctorService
 {
-    public function createNew(CreateDoctorDTO $doctor);
+    public function createNew(CreateDoctorDTO $dto): OutputDoctorDTO;
 
-    public function findById(int $id);
+    public function getById(int $id): OutputDoctorDTO;
 
-    public function update(UpdateDoctorDTO $doctor, UserEntity $user);
+    public function update(UpdateDoctorDTO $dto): OutputDoctorDTO;
 
-    public function delete(int $id);
+    public function delete(int $id): void;
 
-    public function getAllDoctors(QueryDoctorsDTO $queryDTO);
+    public function getAllDoctors(QueryDoctorsDTO $queryDTO): PaginatedResultDTO;
 }

@@ -3,6 +3,7 @@
 namespace App\Tests\User;
 
 use App\User\UserEntity;
+use App\User\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,10 +17,13 @@ class UserControllerTest extends WebTestCase
     private const WRONG_PHONE = '+79991234569';
     private const WRONG_PASSWORD = 'secret123L!';
 
-    protected function getExistingUser(): UserEntity
+    protected function getExistingUser(): object
     {
+        /**
+         * @var $userRepository UserRepository
+         */
         $userRepository = static::getContainer()->get(\App\User\UserRepository::class);
-        return $userRepository->findByPhone(\App\DataFixtures\UserFixture::PHONE);
+        return  $userRepository->findOneBy([]);
     }
 
     protected function getJwtManager(): JWTTokenManagerInterface

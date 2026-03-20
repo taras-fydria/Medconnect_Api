@@ -8,8 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(path: 'api/doctor', name: 'api_doctor')]
+
+#[Route(path: '/api/doctor', name: 'api_doctor')]
 class DoctorController extends AbstractController
 {
     public function __construct(
@@ -21,14 +23,19 @@ class DoctorController extends AbstractController
     #[Route(path: '', name: 'api_doctor_all', methods: ['GET'])]
     public function index(QueryDoctorsDTO $queryDTO): JsonResponse
     {
-        throw new \LogicException('Not implemented');
+        $result = $this->doctorService->getAllDoctors($queryDTO);
+        return $this->json($result->items, headers: ['X-Total-Count' => $result->total]);
     }
 
-    #[Route(path: '{doctorId}', name: 'api_doctor_create', methods: ['POST'])]
+    #[Route(path: '/{doctorId}', name: 'api_doctor_show', methods: ['GET'])]
+    public function show(int $doctorId): JsonResponse
+    {
+        return $this->json($this->doctorService->getById($doctorId));
+    }
+
+    #[Route(path: '/{doctorId}', name: 'api_doctor_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         throw new \LogicException('Not implemented');
     }
-
-
 }

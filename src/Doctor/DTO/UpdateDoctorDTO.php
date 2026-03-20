@@ -2,18 +2,26 @@
 
 namespace App\Doctor\DTO;
 
-
-use App\User\UserEntity;
+use App\Doctor\Specialization;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateDoctorDTO extends CreateDoctorDTO
+class UpdateDoctorDTO
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Positive]
         public int $id,
-        UserEntity $user,
-    )
-    {
-        parent::__construct(user: $user);
-    }
+
+        #[Assert\NotBlank]
+        public string $firstName,
+
+        #[Assert\NotBlank]
+        public string $lastName,
+
+        #[Assert\NotBlank]
+        public Specialization $specialization,
+
+        #[Assert\NotBlank]
+        public string $licenseNumber,
+    ) {}
 }

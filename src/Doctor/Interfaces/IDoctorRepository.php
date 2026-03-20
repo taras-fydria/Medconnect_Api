@@ -3,16 +3,23 @@
 namespace App\Doctor\Interfaces;
 
 use App\Doctor\DTO\QueryDoctorsDTO;
+use App\Doctor\Entity\Doctor;
+use App\Shared\Interfaces\IRepositoryFilter;
 
-interface IDoctorRepository
+interface IDoctorRepository extends IRepositoryFilter
 {
-    public function get(int $id);
+    public function get(int $id): ?Doctor;
 
-    public function getAll(QueryDoctorsDTO $queryDTO);
+    /** @return Doctor[] */
+    public function getAll(QueryDoctorsDTO $queryDTO): array;
 
-    public function create(QueryDoctorsDTO $queryDTO);
+    public function getTotalCount(QueryDoctorsDTO $queryDTO): int;
 
-    public function update(QueryDoctorsDTO $queryDTO);
+    public function saveOne(Doctor $doctor, bool $flush = true): void;
 
-    public function delete(int $id);
+    public function deleteOne(Doctor $doctor, bool $flush = true): void;
+
+    public function findByUserId(int $userId): ?Doctor;
+
+    public function getFirstDoctorId(): int;
 }
