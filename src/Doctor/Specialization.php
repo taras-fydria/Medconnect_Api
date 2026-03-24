@@ -4,7 +4,8 @@ namespace App\Doctor;
 
 enum Specialization: string
 {
-    case GeneralSurgery = 'general_surgery';
-    case Cardiology     = 'cardiology';
-    case Neurology      = 'neurology';
+    case GeneralPractice = 'General Practice';
+    case GeneralSurgery = 'General Surgery';
+    case Cardiology = 'Cardiology';
+    case Neurology = 'Neurology';
 }

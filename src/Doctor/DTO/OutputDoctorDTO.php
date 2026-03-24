@@ -9,7 +9,6 @@ class OutputDoctorDTO implements JsonSerializable
 {
     public function __construct(
         public int           $id,
-        public string        $phone,
         public string        $firstName,
         public string        $lastName,
         public Specialization $specialization,
@@ -20,7 +19,6 @@ class OutputDoctorDTO implements JsonSerializable
     {
         return [
             'id'             => $this->id,
-            'phone'          => $this->phone,
             'firstName'      => $this->firstName,
             'lastName'       => $this->lastName,
             'specialization' => $this->specialization->value,

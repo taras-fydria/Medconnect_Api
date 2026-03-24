@@ -18,10 +18,14 @@ class UpdateDoctorDTO
         #[Assert\NotBlank]
         public string $lastName,
 
-        #[Assert\NotBlank]
-        public Specialization $specialization,
+        #[Assert\Enum(Specialization::class)]
+        public string $specialization,
 
         #[Assert\NotBlank]
         public string $licenseNumber,
+
+        #[Assert\NotBlank]
+        #[Assert\Positive]
+        public int $userID,
     ) {}
 }

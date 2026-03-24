@@ -7,11 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateDoctorDTO
 {
-    public function __construct(
-        #[Assert\NotBlank]
-        #[Assert\Positive]
-        public int $userId,
 
+    public function __construct(
         #[Assert\NotBlank]
         public string $firstName,
 
@@ -19,9 +16,16 @@ class CreateDoctorDTO
         public string $lastName,
 
         #[Assert\NotBlank]
-        public Specialization $specialization,
+        public string $licenseNumber,
 
         #[Assert\NotBlank]
-        public string $licenseNumber,
-    ) {}
+        #[Assert\Enum(Specialization::class)]
+        public string $specialization,
+
+        #[Assert\NotBlank]
+        #[Assert\Positive]
+        public int $userId,
+    )
+    {
+    }
 }
