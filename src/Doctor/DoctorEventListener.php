@@ -17,17 +17,18 @@ class DoctorEventListener
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-        match (true) {
-            $exception instanceof DoctorNotFoundException => $event->setResponse(
-                new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_NOT_FOUND)
-            ),
-            $exception instanceof DoctorAlreadyExistsException => $event->setResponse(
-                new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_CONFLICT)
-            ),
-            $exception instanceof DoctorWithUserIdAlreadyExistException => $event->setResponse(
-                new JsonResponse(['error' => $exception->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY)
-            ),
+        $statusCode =  match (true) {
+            $exception instanceof DoctorNotFoundException => Response::HTTP_NOT_FOUND,
+            $exception instanceof DoctorAlreadyExistsException => Response::HTTP_CONFLICT,
+            $exception instanceof DoctorWithUserIdAlreadyExistException => Response::HTTP_UNPROCESSABLE_ENTITY,
             default => null,
         };
+
+        if (!statusCode) {
+            return;
+        }
+
+        $response = new JsonResponse(['error' => $exception->getMessage()], $statusCode);
+        $event->setResponse($response);
     }
 }
