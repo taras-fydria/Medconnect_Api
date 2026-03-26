@@ -11,14 +11,14 @@ use App\User\UserEntity;
 
 interface IDoctorRepository extends IRepositoryFilter
 {
-    public function getByID(int $id): ?Doctor;
+    public function findByDoctorID(int $id): ?Doctor;
 
     /** @return Doctor[] */
     public function getAll(QueryDoctorsDTO $queryDTO): array;
 
     public function getTotalCount(QueryDoctorsDTO $queryDTO): int;
 
-    public function saveOne(CreateDoctorDTO $dto, UserEntity $user, bool $flush = true): Doctor;
+    public function saveOne(Doctor $doctor, bool $flush = true): Doctor;
 
     public function deleteOne(Doctor $doctor, bool $flush = true): void;
 
@@ -26,7 +26,8 @@ interface IDoctorRepository extends IRepositoryFilter
 
     public function getFirstID(): int;
 
-    public function getByUserID(int $userId): ?Doctor;
+    /** @return Doctor[] */
+    public function findConflicts(int $userId, string $licenseNumber): array;
 
-    public function updateOne(UpdateDoctorDTO $dto, Doctor $doctor): Doctor;
+    public function existsByLicenseNumberExcluding(string $licenseNumber, int $excludeId): bool;
 }

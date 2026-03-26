@@ -63,7 +63,7 @@ class DoctorControllerTest extends WebTestCase
         $doctor->setUser($user);
         $doctor->setFirstName('Ivan');
         $doctor->setLastName('Petrov');
-        $doctor->setSpecialization(Specialization::Cardiology);
+        $doctor->setSpecialization(Specialization::Cardiology->value);
         $doctor->setLicenseNumber('LIC-TEST');
 
         return $doctor;

@@ -4,6 +4,7 @@ namespace App\Doctor;
 
 use App\Doctor\Exception\DoctorAlreadyExistsException;
 use App\Doctor\Exception\DoctorNotFoundException;
+use App\Doctor\Exception\DoctorWithLicenseNumberAlreadyExistException;
 use App\Doctor\Exception\DoctorWithUserIdAlreadyExistException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +20,7 @@ class DoctorEventListener
         $exception = $event->getThrowable();
         $statusCode =  match (true) {
             $exception instanceof DoctorNotFoundException => Response::HTTP_NOT_FOUND,
-            $exception instanceof DoctorAlreadyExistsException => Response::HTTP_CONFLICT,
+            $exception instanceof DoctorAlreadyExistsException, $exception instanceof DoctorWithLicenseNumberAlreadyExistException => Response::HTTP_CONFLICT,
             $exception instanceof DoctorWithUserIdAlreadyExistException => Response::HTTP_UNPROCESSABLE_ENTITY,
             default => null,
         };

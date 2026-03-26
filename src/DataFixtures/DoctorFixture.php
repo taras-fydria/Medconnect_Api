@@ -45,7 +45,7 @@ class DoctorFixture extends Fixture implements DependentFixtureInterface
         $knownDoctor->setUser($knownUser)
             ->setFirstName(self::FIRST_NAME)
             ->setLastName(self::LAST_NAME)
-            ->setSpecialization(Specialization::GeneralPractice)
+            ->setSpecialization(Specialization::GeneralPractice->value)
             ->setLicenseNumber(self::LICENSE);
 
         $manager->persist($knownDoctor);
@@ -61,8 +61,8 @@ class DoctorFixture extends Fixture implements DependentFixtureInterface
             $doctor->setUser($user);
             $doctor->setFirstName($faker->firstName());
             $doctor->setLastName($faker->lastName());
-            $doctor->setSpecialization($specializations[array_rand($specializations)]);
-            $doctor->setLicenseNumber('LIC-' . $faker->numerify('#####'));
+            $doctor->setSpecialization($specializations[array_rand($specializations)]->value);
+            $doctor->setLicenseNumber('LIC-' . $faker->unique()->numerify('#####'));
             $manager->persist($doctor);
         }
 

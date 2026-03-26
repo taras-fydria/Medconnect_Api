@@ -2,13 +2,10 @@
 
 namespace App\Doctor;
 
-use App\Doctor\DTO\CreateDoctorDTO;
 use App\Doctor\DTO\QueryDoctorsDTO;
-use App\Doctor\DTO\UpdateDoctorDTO;
 use App\Doctor\Entity\Doctor;
 use App\Doctor\Interfaces\IDoctorRepository;
 use App\Shared\DTO\PaginationDTO;
-use App\User\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
@@ -70,7 +67,7 @@ class DoctorRepository extends ServiceEntityRepository implements IDoctorReposit
         return $this->findByFilter($queryDTO)->getResult();
     }
 
-    public function getByID(int $id): ?Doctor
+    public function findByDoctorID(int $id): ?Doctor
     {
         return $this->find($id);
     }
@@ -80,15 +77,8 @@ class DoctorRepository extends ServiceEntityRepository implements IDoctorReposit
         return $this->findOneBy([], ['id' => 'ASC'])->id;
     }
 
-    public function saveOne(CreateDoctorDTO $dto, UserEntity $user, bool $flush = true): Doctor
+    public function saveOne($doctor, $flush = true): Doctor
     {
-        $doctor = new Doctor()
-            ->setFirstName($dto->firstName)
-            ->setLastName($dto->lastName)
-            ->setLicenseNumber($dto->licenseNumber)
-            ->setSpecialization(Specialization::from($dto->specialization))
-            ->setUser($user);
-
         $this->entityManager->persist($doctor);
 
         if ($flush) {
@@ -109,7 +99,11 @@ class DoctorRepository extends ServiceEntityRepository implements IDoctorReposit
 
     public function findOneByUserID(int $userId): ?Doctor
     {
-        throw new \LogicException('method not implemented');
+        return $this->createQueryBuilder('d')
+            ->where('d.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function getTotalCount(QueryDoctorsDTO $queryDTO): int
@@ -120,21 +114,24 @@ class DoctorRepository extends ServiceEntityRepository implements IDoctorReposit
         return (int)$queryBuilder->getQuery()->getSingleScalarResult();
     }
 
-    public function getByUserID(int $userId): ?Doctor
+    public function findConflicts(int $userId, string $licenseNumber): array
     {
-        return $this->createQueryBuilder('doctors')->where('doctors.user = :userId')->setParameter('userId', $userId)->getQuery()->getOneOrNullResult();
+        return $this->createQueryBuilder('d')
+            ->where('d.user = :userId OR d.licenseNumber = :licenseNumber')
+            ->setParameter('userId', $userId)
+            ->setParameter('licenseNumber', $licenseNumber)
+            ->getQuery()
+            ->getResult();
     }
 
-    public function updateOne(UpdateDoctorDTO $dto, Doctor $doctor): Doctor
+    public function existsByLicenseNumberExcluding(string $licenseNumber, int $excludeId): bool
     {
-        $doctor
-            ->setFirstName($dto->firstName)
-            ->setLastName($dto->lastName)
-            ->setLicenseNumber($dto->licenseNumber)
-            ->setSpecialization(Specialization::from($dto->specialization));
-
-        $this->entityManager->flush();
-
-        return $doctor;
+        return (bool)$this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->where('d.licenseNumber = :licenseNumber AND d.id != :id')
+            ->setParameter('licenseNumber', $licenseNumber)
+            ->setParameter('id', $excludeId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

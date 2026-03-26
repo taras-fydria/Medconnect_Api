@@ -13,7 +13,7 @@ class UpdateDoctorDTO
         #[Assert\NotBlank]
         #[Assert\Positive]
         #[OA\Property(type: 'integer', example: 1)]
-        public int $id,
+        public int    $id,
 
         #[Assert\NotBlank]
         #[OA\Property(type: 'string', example: 'Ivan')]
@@ -34,6 +34,20 @@ class UpdateDoctorDTO
         #[Assert\NotBlank]
         #[Assert\Positive]
         #[OA\Property(type: 'integer', example: 1)]
-        public int $userID,
-    ) {}
+        public int    $userID,
+    )
+    {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            id: $data['id'] ?? 0,
+            firstName: $data['firstName'] ?? '',
+            lastName: $data['lastName'] ?? '',
+            specialization: $data['specialization'] ?? '',
+            licenseNumber: $data['licenseNumber'] ?? '',
+            userID: $data['userID'] ?? 0
+        );
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Doctor;
 
 use App\Doctor\DTO\CreateDoctorDTO;
@@ -22,8 +23,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class DoctorController extends AbstractController
 {
     public function __construct(
-        private IDoctorService $doctorService,
-    ) {}
+        private readonly IDoctorService $doctorService,
+    )
+    {
+    }
 
     #[DoctorListOperation]
     #[Route(path: '', name: 'api_doctor_all', methods: ['GET'])]
@@ -45,15 +48,8 @@ class DoctorController extends AbstractController
     #[Route(path: '', name: 'api_doctor_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        $content = $request->toArray();
-        $dto     = new CreateDoctorDTO(
-            firstName: $content['firstName'] ?? '',
-            lastName: $content['lastName'] ?? '',
-            licenseNumber: $content['licenseNumber'] ?? '',
-            specialization: $content['specialization'] ?? '',
-            userId: $content['userID'] ?? 0,
-        );
-        $result  = $this->doctorService->createNew($dto);
+        $dto    = CreateDoctorDTO::fromArray($request->toArray());
+        $result = $this->doctorService->createNew($dto);
         return $this->json($result, status: Response::HTTP_CREATED);
     }
 
@@ -61,16 +57,7 @@ class DoctorController extends AbstractController
     #[Route(path: '/{doctorId}', name: 'api_doctor_update', methods: ['PUT'])]
     public function update(int $doctorId, Request $request): JsonResponse
     {
-        $content = $request->toArray();
-        $dto     = new UpdateDoctorDTO(
-            id: $doctorId,
-            firstName: $content['firstName'] ?? '',
-            lastName: $content['lastName'] ?? '',
-            specialization: $content['specialization'] ?? '',
-            licenseNumber: $content['licenseNumber'] ?? '',
-            userID: $content['userID'] ?? 0,
-        );
-
+        $dto    = UpdateDoctorDTO::fromArray(['id' => $doctorId, ...$request->toArray()]);
         $result = $this->doctorService->update($dto);
 
         return $this->json($result, status: Response::HTTP_OK);

@@ -29,6 +29,19 @@ class CreateDoctorDTO
         #[Assert\NotBlank]
         #[Assert\Positive]
         #[OA\Property(type: 'integer', example: 1)]
-        public int $userId,
-    ) {}
+        public int    $userId,
+    )
+    {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            firstName: $data['firstName'] ?? '',
+            lastName: $data['lastName'] ?? '',
+            licenseNumber: $data['licenseNumber'] ?? '',
+            specialization: $data['specialization'] ?? '',
+            userId: $data['userID'] ?? 0,
+        );
+    }
 }

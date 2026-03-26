@@ -9,6 +9,7 @@ use App\Doctor\DTO\OutputDoctorDTO;
 use App\Doctor\DTO\QueryDoctorsDTO;
 use App\Doctor\DTO\UpdateDoctorDTO;
 use App\Doctor\Exception\DoctorNotFoundException;
+use App\Doctor\Exception\DoctorWithLicenseNumberAlreadyExistException;
 use App\Doctor\Exception\DoctorWithUserIdAlreadyExistException;
 use App\Doctor\Interfaces\IDoctorRepository;
 use App\Doctor\Interfaces\IDoctorService;
@@ -44,11 +45,14 @@ class DoctorServiceTest extends KernelTestCase
         /** @var UserEntity $knownDoctorUser */
         $knownDoctorUser    = $userProvider->loadUserByIdentifier(DoctorFixture::PHONE);
         $this->doctorUserId = $knownDoctorUser->getId();
-        $this->doctorId     = $doctorRepo->getByUserID($this->doctorUserId)->getId();
+        $this->doctorId     = $doctorRepo->findOneByUserID($this->doctorUserId)->getId();
     }
 
     private function createDoctorDTO(): CreateDoctorDTO
     {
+        echo '<pre>';
+        var_dump($this->userId);
+        echo '</pre>';
         return new CreateDoctorDTO(
             firstName: 'John',
             lastName: 'Doe',
@@ -76,6 +80,9 @@ class DoctorServiceTest extends KernelTestCase
 
         $this->assertInstanceOf(PaginatedResultDTO::class, $result);
         $this->assertIsArray($result->items);
+        foreach ($result->items as $doctor) {
+            $this->assertInstanceOf(OutputDoctorDTO::class, $doctor);
+        }
         $this->assertGreaterThan(0, $result->total);
         $this->assertCount($result->limit, $result->items);
     }
@@ -113,6 +120,37 @@ class DoctorServiceTest extends KernelTestCase
 
         $this->expectException(DoctorWithUserIdAlreadyExistException::class);
         $this->service->createNew($dto);
+    }
+
+    public function testCreateDoctorWithExistingLicenseNumber(): void
+    {
+        $dto = new CreateDoctorDTO(
+            firstName: 'Jane',
+            lastName: 'Doe',
+            licenseNumber: DoctorFixture::LICENSE,
+            specialization: Specialization::GeneralPractice->value,
+            userId: $this->userId,
+        );
+
+        $this->expectException(DoctorWithLicenseNumberAlreadyExistException::class);
+        $this->service->createNew($dto);
+    }
+
+    public function testUpdateDoctorWithExistingLicenseNumber(): void
+    {
+        $second = $this->service->createNew($this->createDoctorDTO());
+
+        $dto = new UpdateDoctorDTO(
+            id: $second->id,
+            firstName: 'Jane',
+            lastName: 'Doe',
+            specialization: Specialization::GeneralPractice->value,
+            licenseNumber: DoctorFixture::LICENSE,
+            userID: $this->userId,
+        );
+
+        $this->expectException(DoctorWithLicenseNumberAlreadyExistException::class);
+        $this->service->update($dto);
     }
 
     public function testUpdate(): void

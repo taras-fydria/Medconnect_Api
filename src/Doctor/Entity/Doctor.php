@@ -6,6 +6,7 @@ use App\Doctor\Interfaces\IDoctorRepository;
 use App\Doctor\Specialization;
 use App\User\UserEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IDoctorRepository::class)]
 #[ORM\Table(name: "doctor")]
@@ -29,7 +30,7 @@ class Doctor
     #[ORM\Column(enumType: Specialization::class)]
     private Specialization $specialization;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private string $licenseNumber;
 
     public function getId(): int
@@ -81,9 +82,9 @@ class Doctor
         return $this->specialization;
     }
 
-    public function setSpecialization(Specialization $specialization): self
+    public function setSpecialization(string $specialization): self
     {
-        $this->specialization = $specialization;
+        $this->specialization = Specialization::from($specialization);
         return $this;
     }
 
