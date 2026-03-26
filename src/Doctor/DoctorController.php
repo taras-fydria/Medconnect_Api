@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Doctor;
 
 use App\Doctor\DTO\CreateDoctorDTO;

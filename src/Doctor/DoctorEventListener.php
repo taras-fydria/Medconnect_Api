@@ -24,7 +24,7 @@ class DoctorEventListener
             default => null,
         };
 
-        if (!statusCode) {
+        if (!$statusCode) {
             return;
         }
 
