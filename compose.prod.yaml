@@ -3,14 +3,13 @@ services:
     build:
       context: .
       target: frankenphp_prod
-
     ports:
       - "127.0.0.1:8081:80"
-
     environment:
       APP_SECRET: ${APP_SECRET}
       SERVER_NAME: localhost, php:80
       DEFAULT_URI: http://localhost
-
       SYMFONY_TRUSTED_PROXIES: 127.0.0.1,REMOTE_ADDR,PRIVATE_SUBNETS
       SYMFONY_TRUSTED_HEADERS: x-forwarded-for,x-forwarded-host,x-forwarded-proto,x-forwarded-port,x-forwarded-prefix
+      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET}
