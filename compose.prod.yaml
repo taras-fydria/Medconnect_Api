@@ -7,7 +7,8 @@ services:
       - "127.0.0.1:8081:80"
     environment:
       APP_SECRET: ${APP_SECRET}
-      SERVER_NAME: localhost, php:80
+      SERVER_NAME: :80
+      CADDY_GLOBAL_OPTIONS: auto_https off
       DEFAULT_URI: http://localhost
       SYMFONY_TRUSTED_PROXIES: 127.0.0.1,REMOTE_ADDR,PRIVATE_SUBNETS
       SYMFONY_TRUSTED_HEADERS: x-forwarded-for,x-forwarded-host,x-forwarded-proto,x-forwarded-port,x-forwarded-prefix
